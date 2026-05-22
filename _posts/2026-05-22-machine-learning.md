@@ -1,13 +1,11 @@
 ---
-title: "Arne Andersson Tree (AA Tree)"
-date: 2026-05-21 21:00:00 +0700
-categories: [Computer Science, Data Structures & Algorithms]
-tags: [cpp, tree, pointers, memory-management, algorithms]
+title: "Introduction to Machine Learning (ML)"
+date: 2026-05-22 12:00:00 +0700
+categories: [Artificial Intelligence, Machine Learning, Machine Learning Pipeline, Data Preprocessing]
+tags: [cpp, machine learning, AI]
 math: true
 ---
-When studying balanced binary search tree, most of us are introduced to the AVL Tree or the Red-Black Tree. However, implementing a Red-Black Tree from scratch can be a nightmare due to numerous edge cases in rebalancing. Enter the **AA Tree** (named after its inventor, Arne Anderson) - a variation of the Red-Black Tree that is significantly easier to code and maintain.
 
-In this post, we will explore the core concepts of the AA Tree, how to define its structure, and how to implement some operations from scratch using raw C++ pointers.
 
 ## 1. What is AA Tree?
 
@@ -64,9 +62,6 @@ To keep the tree balanced, the AA Tree relies on two fundamental utility operati
 * Node C and node N share the same level, creating a left horizontal link.
 * Skew operation is used by right rotation at node C and node N.
 
-The steps below show how to eliminate the left horizontal link:
-
-{% include slideshow.html urls="/assets/img/CS/DSA/1_aa_tree/aa-tree.png, /assets/img/CS/DSA/1_aa_tree/aa-tree.png" %}
 
 This is the source code of **skew** operation using C++ pointers:
 ```cpp

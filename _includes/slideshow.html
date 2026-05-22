@@ -1,0 +1,93 @@
+{% assign img_array = include.urls | split: ',' %}
+
+<div class="slideshow-wrapper">
+  {% for img in img_array %}
+    <div class="slide {% if forloop.first %}active{% endif %}">
+      <img src="{{ img | strip }}" alt="Minh họa bước {{ forloop.index }}">
+    </div>
+  {% endfor %}
+
+  <a class="nav-btn prev" onclick="moveSlide(this, -1)">&#10094;</a>
+  <a class="nav-btn next" onclick="moveSlide(this, 1)">&#10095;</a>
+</div>
+
+<style>
+  .slideshow-wrapper {
+    position: relative;
+    max-width: 100%;
+    margin: 2rem auto;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .slide {
+    display: none;
+    width: 100%;
+  }
+  .slide.active {
+    display: block;
+    animation: fade 0.5s;
+  }
+  .slide img {
+    width: 100%;
+    border-radius: 8px;
+    display: block;
+  }
+  .nav-btn {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    transition: 0.3s ease;
+    user-select: none;
+    background-color: rgba(0, 0, 0, 0.4);
+    text-decoration: none;
+  }
+  .nav-btn.next {
+    right: 0;
+    border-radius: 4px 0 0 4px;
+  }
+  .nav-btn.prev {
+    left: 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  @keyframes fade {
+    from {
+      opacity: 0.5;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Kiểm tra xem hàm đã tồn tại chưa để tránh lỗi khai báo lại khi gọi nhiều component
+  if (typeof moveSlide === 'undefined') {
+    function moveSlide(btn, n) {
+      // Tìm khối slideshow chứa nút vừa bấm
+      const wrapper = btn.closest('.slideshow-wrapper');
+      const slides = wrapper.querySelectorAll('.slide');
+
+      // Tìm vị trí của ảnh đang hiển thị
+      let activeIndex = Array.from(slides).findIndex((s) => s.classList.contains('active'));
+
+      // Xóa hiển thị ảnh cũ
+      slides[activeIndex].classList.remove('active');
+
+      // Tính vị trí ảnh mới (xoay vòng)
+      activeIndex = (activeIndex + n + slides.length) % slides.length;
+
+      // Hiển thị ảnh mới
+      slides[activeIndex].classList.add('active');
+    }
+  }
+</script>
