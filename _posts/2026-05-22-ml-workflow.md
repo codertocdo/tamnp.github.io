@@ -1,5 +1,5 @@
 ---
-title: "The Architecture of the Machine Learning Lifecycle"
+title: "Machine Learning Lifecycle"
 date: 2026-05-22 12:00:00 +0700
 categories: [Artificial Intelligence, Machine Learning, Machine Learning Pipeline, Data Preprocessing]
 tags: [ml pipeline, machine learning, data engineering, AI]
