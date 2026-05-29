@@ -1,9 +1,19 @@
-.txt-error {
+.txt-special {
   color: #d9534f;
   font-weight: bold;
 }
 
-.txt-math {
-  color: #0275d8;
-  font-style: italic;
+.txt-highlight {
+  color: #3a960e;
+  font-weight: bold;
+}
+
+.txt-old {
+  color: #5e04c4;
+  font-weight: bold;
+}
+
+.txt-basic {
+  color: #c49e04;
+  font-weight: bold;
 }
