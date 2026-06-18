@@ -1,15 +1,25 @@
-.txt-special {
+.txt-main {
   color: #d9534f;
   font-weight: bold;
 }
 
-.txt-highlight {
-  color: #07b05c;
+.txt-special {
+  color: #fd7e14;
   font-weight: bold;
 }
 
-.txt-old {
-  color: #990de0;
+.txt-highlight {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.txt-operation {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: monospace;
   font-weight: bold;
 }
 
