@@ -13,11 +13,11 @@
   font-weight: bold;
 }
 
-.txt-operation {
+.txt-function {
   background-color: #f8d7da;
   color: #721c24;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 0.9em;
   font-family: monospace;
   font-weight: bold;
