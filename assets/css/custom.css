@@ -1,17 +1,223 @@
+/* =========================================================
+   custom.css
+   Semantic text highlighting for Jekyll technical/blog sites
+   Supports Light and Dark themes via CSS variables.
+   ========================================================= */
+
+/* =========================================================
+   1. LIGHT THEME — DEFAULT
+   ========================================================= */
+
+:root {
+  /* Main page colors */
+  /* Semantic highlights */
+  --txt-main: #2563eb;
+  --txt-special: #dc2626;
+  --txt-special-bg: #fef2f2;
+  --txt-highlight: #d97706;
+  --txt-name: #7c3aed;
+  --txt-basic: #0f766e;
+
+  /* Inline code / function */
+  --code-text: #1f2937;
+  --code-bg: #f1f5f9;
+  --code-border: #e2e8f0;
+}
+
+/* =========================================================
+   2. DARK THEME
+   Use:
+   <html data-theme="dark">
+   ========================================================= */
+[data-theme='dark'] {
+  /* Main page colors */
+  /* Semantic highlights */
+  --txt-main: #60a5fa;
+  --txt-special: #fb7185;
+  --txt-special-bg: #2b1719;
+  --txt-highlight: #fbbf24;
+  --txt-name: #c084fc;
+  --txt-basic: #2dd4bf;
+
+  /* Inline code / function */
+  --code-text: #e2e8f0;
+  --code-bg: #1e293b;
+  --code-border: #334155;
+}
+/* =========================================================
+   3. OPTIONAL: FOLLOW SYSTEM THEME
+   This only applies when data-theme is not explicitly set.
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --background-color: #111827;
+    --text-color: #e5e7eb;
+
+    --txt-main: #60a5fa;
+    --txt-special: #fb7185;
+    --txt-special-bg: #2b1719;
+    --txt-highlight: #fbbf24;
+    --txt-name: #c084fc;
+    --txt-basic: #2dd4bf;
+
+    --code-text: #e2e8f0;
+    --code-bg: #1e293b;
+    --code-border: #334155;
+  }
+}
+
+/* =========================================================
+   4. SEMANTIC TEXT CLASSES
+   ========================================================= */
+
+/*
+   Main topic of the article.
+   Recommended usage: once near the introduction.
+*/
 .txt-main {
-  color: #d9534f;
-  font-weight: bold;
+  color: var(--txt-main);
+  font-weight: 700;
 }
 
+/*
+   Important information that readers should remember.
+   Keep this relatively rare so it remains visually meaningful.
+*/
 .txt-special {
-  color: #fd7e14;
-  font-weight: bold;
+  color: var(--txt-special);
+  background-color: var(--txt-special-bg);
+
+  font-weight: 700;
+
+  padding: 0.05em 0.25em;
+  border-radius: 4px;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
+/*
+   Normal emphasis inside a sentence.
+*/
 .txt-highlight {
-  color: #28a745;
-  font-weight: bold;
+  color: var(--txt-highlight);
+  font-weight: 600;
 }
+
+/*
+   Names of algorithms, methods, fields, concepts, technologies, etc.
+   Examples: Merge Sort, Divide and Conquer, Machine Learning.
+*/
+.txt-name {
+  color: var(--txt-name);
+  font-weight: 600;
+}
+
+/*
+   Fundamental tools, data structures, or foundational knowledge.
+   Examples: array, linked list, stack, queue.
+*/
+.txt-basic {
+  color: var(--txt-basic);
+  font-weight: 600;
+}
+
+/* =========================================================
+   5. INLINE FUNCTION / CODE STYLE
+   ========================================================= */
+
+/*
+   Manual usage:
+   <span class="txt-function">sort()</span>
+*/
+.txt-function {
+  color: var(--code-text);
+  background-color: var(--code-bg);
+
+  border: 1px solid var(--code-border);
+  border-radius: 5px;
+
+  padding: 0.12em 0.35em;
+
+  font-family:
+    'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas,
+    'Liberation Mono', Menlo, monospace;
+
+  font-size: 0.92em;
+  font-weight: 500;
+  line-height: inherit;
+
+  white-space: nowrap;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/*
+   Recommended for Jekyll Markdown inline code.
+
+   Markdown:
+   `sort()`
+
+   This selector excludes code blocks inside <pre>.
+*/
+:not(pre) > code {
+  color: var(--code-text);
+  background-color: var(--code-bg);
+
+  border: 1px solid var(--code-border);
+  border-radius: 5px;
+
+  padding: 0.12em 0.35em;
+
+  font-family:
+    'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas,
+    'Liberation Mono', Menlo, monospace;
+
+  font-size: 0.92em;
+  font-weight: 500;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* =========================================================
+   6. OPTIONAL GLOBAL THEME COLORS
+   Remove this section if your Jekyll theme already manages
+   page background/text colors.
+   ========================================================= */
+
+/*
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+*/
+
+/* =========================================================
+   7. EXAMPLE USAGE IN MARKDOWN
+   =========================================================
+
+   <span class="txt-main">Sorting Algorithms</span>
+
+   <span class="txt-special">O(n²)</span>
+
+   <span class="txt-highlight">
+     very efficient for nearly sorted data
+   </span>
+
+   <span class="txt-name">Insertion Sort</span>
+
+   <span class="txt-basic">array</span>
+
+   <span class="txt-function">insertionSort()</span>
+
+   Or simply use Markdown inline code:
+
+   `insertionSort()`
+
+   ========================================================= */
 
 .txt-function {
   background-color: #f8d7da;
@@ -20,10 +226,5 @@
   border-radius: 2px;
   font-size: 0.9em;
   font-family: monospace;
-  font-weight: bold;
-}
-
-.txt-basic {
-  color: #c49e04;
   font-weight: bold;
 }

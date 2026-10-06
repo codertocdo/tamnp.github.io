@@ -7,8 +7,6 @@ math: true
 published: false
 ---
 
-<link rel="stylesheet" href="/assets/css/custom.css">
-
 Imagine a Michelin-star chef handed a basket of half-rotten vegetables, mislabeld spice jars, and a scale that's off by 200 grams. No amount of culinary genius saves that dish. Machine learning models are exactlythe same: a state-of-the-art architecture fed on **dirty data** will confidently produce polished, professional-looking garbage. This is the well-known **"Garbage In, Garbage Out""** (GIGO) principle, and it's why, in most real-world analytics and ML projects, the *unglamorous* work ofdata cleaning quietly eats up more time than the modeling itself.
 
 This posts breaks down data cleaning from first principles - not just "which pandas method do I call," but *what is actually happening to the numbers* when you deduplicate, impute, or flag an outlier. We'll build a complete mental model, then drop down to raw C to watch the mechanics execute one CPU cycle at a time - no `df.dropna()` magic wand, just pointers, sums, and comparisons.

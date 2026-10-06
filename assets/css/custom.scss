@@ -1,0 +1,236 @@
+/* =========================================================
+   Tâm's Blog — Semantic Text Styles
+   =========================================================
+   Semantic classes for Markdown posts:
+
+   .txt-main       → Main topic of the article
+   .txt-special    → Critical information / must remember
+   .txt-highlight  → Normal emphasis
+   .txt-name       → Named algorithms, methods, fields
+   .txt-basic      → Fundamental concepts / data structures
+   .txt-operation  → Operations / actions
+   .txt-function   → Function names / code-like expressions
+
+   Chirpy supports light/dark mode through data-mode.
+   ========================================================= */
+
+/* =========================================================
+   1. COLOR TOKENS — LIGHT MODE
+   ========================================================= */
+
+:root {
+  --txt-main: #2563eb;
+  --txt-special: #dc2626;
+  --txt-special-bg: #fef2f2;
+
+  --txt-highlight: #d97706;
+
+  --txt-name: #7c3aed;
+
+  --txt-basic: #0f766e;
+
+  --txt-operation: #0891b2;
+
+  /* Inline code / function */
+  --code-text: #1f2937;
+  --code-bg: #f1f5f9;
+  --code-border: #e2e8f0;
+}
+
+/* =========================================================
+   2. DARK MODE
+   ========================================================= */
+
+html[data-mode='dark'] {
+  --txt-main: #60a5fa;
+
+  --txt-special: #fb7185;
+  --txt-special-bg: #2b1719;
+
+  --txt-highlight: #fbbf24;
+
+  --txt-name: #c084fc;
+
+  --txt-basic: #2dd4bf;
+
+  --txt-operation: #22d3ee;
+
+  --code-text: #e2e8f0;
+  --code-bg: #1e293b;
+  --code-border: #334155;
+}
+
+/* =========================================================
+   3. AUTOMATIC SYSTEM DARK MODE
+   =========================================================
+   Your _config.yml currently allows Chirpy to follow the
+   operating system theme when no explicit mode is selected.
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-mode]) {
+    --txt-main: #60a5fa;
+
+    --txt-special: #fb7185;
+    --txt-special-bg: #2b1719;
+
+    --txt-highlight: #fbbf24;
+
+    --txt-name: #c084fc;
+
+    --txt-basic: #2dd4bf;
+
+    --txt-operation: #22d3ee;
+
+    --code-text: #e2e8f0;
+    --code-bg: #1e293b;
+    --code-border: #334155;
+  }
+}
+
+/* =========================================================
+   4. MAIN TOPIC
+   =========================================================
+   Example:
+   <span class="txt-main">Data Compression</span>
+   ========================================================= */
+
+.txt-main {
+  color: var(--txt-main);
+  font-weight: 700;
+}
+
+/* =========================================================
+   5. SPECIAL / MUST REMEMBER
+   =========================================================
+   More visually prominent than normal emphasis.
+   ========================================================= */
+
+.txt-special {
+  color: var(--txt-special);
+  background-color: var(--txt-special-bg);
+
+  font-weight: 700;
+
+  padding: 0.05em 0.2em;
+  border-radius: 0.25em;
+}
+
+/* =========================================================
+   6. NORMAL HIGHLIGHT
+   =========================================================
+   Used for emphasis inside a sentence.
+   ========================================================= */
+
+.txt-highlight {
+  color: var(--txt-highlight);
+  font-weight: 700;
+}
+
+/* =========================================================
+   7. NAMED CONCEPT / ALGORITHM / METHOD
+   =========================================================
+   Examples:
+   - Binary Search Tree
+   - CLIP
+   - Batch Normalization
+   - Cosine Similarity
+   ========================================================= */
+
+.txt-name {
+  color: var(--txt-name);
+  font-weight: 650;
+}
+
+/* =========================================================
+   8. BASIC / FOUNDATIONAL CONCEPT
+   =========================================================
+   Examples:
+   - Array
+   - Linked List
+   - Stack
+   - Queue
+   - Insertion Sort
+   ========================================================= */
+
+.txt-basic {
+  color: var(--txt-basic);
+  font-weight: 650;
+}
+
+/* =========================================================
+   9. OPERATION
+   =========================================================
+   Examples:
+   - searching
+   - sorting
+   - traversing
+   - inserting
+   ========================================================= */
+
+.txt-operation {
+  color: var(--txt-operation);
+  font-weight: 650;
+}
+
+/* =========================================================
+   10. FUNCTION / INLINE CODE
+   =========================================================
+   Example:
+   <span class="txt-function">cosine_similarity()</span>
+   ========================================================= */
+
+.txt-function {
+  display: inline-block;
+
+  padding: 0.1em 0.4em;
+
+  border: 1px solid var(--code-border);
+  border-radius: 0.35em;
+
+  background-color: var(--code-bg);
+  color: var(--code-text);
+
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  font-size: 0.9em;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* =========================================================
+   11. NORMAL MARKDOWN INLINE CODE
+   =========================================================
+   This makes:
+
+       `cosine_similarity()`
+
+   visually consistent with .txt-function.
+   ========================================================= */
+
+:not(pre) > code {
+  padding: 0.1em 0.4em;
+
+  border: 1px solid var(--code-border);
+  border-radius: 0.35em;
+
+  background-color: var(--code-bg);
+  color: var(--code-text);
+
+  font-size: 0.9em;
+}
+
+/* =========================================================
+   12. OPTIONAL — PREVENT INLINE CODE FROM BECOMING
+       TOO SMALL ON MOBILE
+   ========================================================= */
+
+@media (max-width: 576px) {
+  .txt-function,
+  :not(pre) > code {
+    font-size: 0.88em;
+    padding: 0.08em 0.32em;
+  }
+}

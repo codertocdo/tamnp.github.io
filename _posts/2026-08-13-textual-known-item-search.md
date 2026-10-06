@@ -4,9 +4,8 @@ date: 2026-08-13 09:00:00 +0700
 categories: [Artificial Intelligence, Multimedia Retrieval]
 tags: [information-retrieval, video-search, known-item-search, clip, multimodal-ai, video-browser-showdown]
 math: true
+published: false
 ---
-
-<link rel="stylesheet" href="/assets/css/custom.css">
 
 Imagine you watched a video months ago - maybe a lecture, a news clip, or a random moment from your own life-logging camera - and now you desperately want to find it again. You don't have the filename. You don't have a thumbnail. All you have is a memory, which you can only turn into a sentence: *"A man in a red jacket walks past a fountain while it starts raining, and then a dog runs into the frame."*
 
@@ -93,12 +92,20 @@ import open_clip
 from PIL import Image
 
 # Load a pretrained CLIP model and its matching preprocessing/tokenizer
-model, _, preprocess = open_clip.create_model_and_transform("ViT-B-32", pretrained = "openai")
+model, _, preprocess = open_clip.create_model_and_transforms(
+  "ViT-B-32", 
+  pretrained = "openai"
+)
 tokenizer = open_clip.get_tokenizer("ViT-B-32")
 model.eval()
 
 # 1. Pre-compute embeddings for candidate video frames (done once, offline)
-frame_paths = ["frame_0001.jpg", "frame_0002.jpg", "frame_0003.jpg"]
+frame_paths = [
+  "frame_0001.jpg", 
+  "frame_0002.jpg", 
+  "frame_0003.jpg"
+]
+
 images = torch.stack([preprocess(Image.open(p)) for p in frame_paths])
 
 with torch.no_grad():
