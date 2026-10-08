@@ -12,4 +12,8 @@
    Custom styles
    ========================================================= */
 
+/* Preserve the semantic text classes already defined by the project. */
 @use 'custom';
+
+/* Dracula/GitHub Light palette and macOS code-window styling. */
+@use 'code-themes';

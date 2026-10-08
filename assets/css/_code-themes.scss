@@ -1,0 +1,294 @@
+/* macOS-inspired code blocks: Dracula dark + GitHub Light */
+
+:root {
+  --code-bg: #f6f8fa;
+  --code-fg: #1f2328;
+  --code-border: #d0d7de;
+  --code-header-bg: #eef1f4;
+  --code-header-fg: #57606a;
+  --code-muted: #6e7781;
+  --code-inline-bg: #eff1f3;
+  --code-inline-fg: #cf222e;
+  --code-comment: #6e7781;
+  --code-keyword: #cf222e;
+  --code-name: #8250df;
+  --code-string: #0a3069;
+  --code-number: #0550ae;
+  --code-operator: #cf222e;
+  --code-punctuation: #24292f;
+  --code-class: #953800;
+  --code-variable: #1f2328;
+  --code-constant: #0550ae;
+}
+
+html[data-mode='dark'] {
+  --code-bg: #282a36;
+  --code-fg: #f8f8f2;
+  --code-border: #44475a;
+  --code-header-bg: #21222c;
+  --code-header-fg: #c7c9d3;
+  --code-muted: #6272a4;
+  --code-inline-bg: #343746;
+  --code-inline-fg: #ff79c6;
+  --code-comment: #6272a4;
+  --code-keyword: #ff79c6;
+  --code-name: #50fa7b;
+  --code-string: #f1fa8c;
+  --code-number: #bd93f9;
+  --code-operator: #ff79c6;
+  --code-punctuation: #f8f8f2;
+  --code-class: #8be9fd;
+  --code-variable: #f8f8f2;
+  --code-constant: #bd93f9;
+}
+
+/* Follow the OS when Chirpy has no explicit data-mode. */
+@media (prefers-color-scheme: dark) {
+  html:not([data-mode]) {
+    --code-bg: #282a36;
+    --code-fg: #f8f8f2;
+    --code-border: #44475a;
+    --code-header-bg: #21222c;
+    --code-header-fg: #c7c9d3;
+    --code-muted: #6272a4;
+    --code-inline-bg: #343746;
+    --code-inline-fg: #ff79c6;
+    --code-comment: #6272a4;
+    --code-keyword: #ff79c6;
+    --code-name: #50fa7b;
+    --code-string: #f1fa8c;
+    --code-number: #bd93f9;
+    --code-operator: #ff79c6;
+    --code-punctuation: #f8f8f2;
+    --code-class: #8be9fd;
+    --code-variable: #f8f8f2;
+    --code-constant: #bd93f9;
+  }
+}
+
+/* Outer window */
+.highlighter-rouge,
+div.highlight,
+figure.highlight {
+  color: var(--code-fg);
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 1rem;
+  margin-bottom: 1.35rem;
+  box-shadow: 0 4px 14px rgb(31 35 40 / 8%);
+}
+
+html[data-mode='dark'] .highlighter-rouge,
+html[data-mode='dark'] div.highlight,
+html[data-mode='dark'] figure.highlight {
+  box-shadow: 0 5px 18px rgb(0 0 0 / 18%);
+}
+
+.highlight {
+  color: var(--code-fg);
+  background: var(--code-bg);
+  overflow-x: auto;
+  border-radius: 0 0 12px 12px;
+}
+
+.highlight pre,
+.highlighter-rouge pre,
+figure.highlight pre {
+  color: var(--code-fg);
+  background: transparent !important;
+  margin: 0;
+  padding: 1rem 1.15rem;
+  line-height: 1.65;
+  tab-size: 4;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.highlight code,
+.highlight pre code,
+.highlighter-rouge pre code {
+  color: var(--code-fg);
+  background: transparent !important;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    monospace;
+  font-size: 0.88rem;
+  text-shadow: none;
+}
+
+/* macOS title bar. Dots are decorative; Chirpy's copy control is retained. */
+.code-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 42px;
+  padding: 0.55rem 0.85rem;
+  color: var(--code-header-fg);
+  background: var(--code-header-bg);
+  border-bottom: 1px solid var(--code-border);
+  border-radius: 11px 11px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.code-header::before {
+  content: '';
+  display: block;
+  flex: 0 0 52px;
+  width: 52px;
+  height: 12px;
+  background:
+    radial-gradient(circle at 6px 6px, #ff5f57 0 5px, transparent 5.4px),
+    radial-gradient(circle at 26px 6px, #febc2e 0 5px, transparent 5.4px),
+    radial-gradient(circle at 46px 6px, #28c840 0 5px, transparent 5.4px);
+}
+
+.code-header button,
+.code-header .copy-code-button,
+.code-header .code-copy {
+  margin-left: auto;
+}
+
+/* Rouge token colors */
+.highlight .c,
+.highlight .c1,
+.highlight .cm,
+.highlight .cp,
+.highlight .cs,
+.highlight .ch,
+.highlight .cd,
+.highlight .cpf {
+  color: var(--code-comment) !important;
+  font-style: italic;
+}
+
+.highlight .k,
+.highlight .kc,
+.highlight .kd,
+.highlight .kn,
+.highlight .kp,
+.highlight .kr,
+.highlight .kt,
+.highlight .ow {
+  color: var(--code-keyword) !important;
+}
+
+.highlight .nf,
+.highlight .fm {
+  color: var(--code-name) !important;
+}
+
+.highlight .s,
+.highlight .s1,
+.highlight .s2,
+.highlight .sb,
+.highlight .sc,
+.highlight .sd,
+.highlight .se,
+.highlight .sh,
+.highlight .si,
+.highlight .sr,
+.highlight .ss {
+  color: var(--code-string) !important;
+}
+
+.highlight .m,
+.highlight .mb,
+.highlight .mf,
+.highlight .mh,
+.highlight .mi,
+.highlight .mo,
+.highlight .il {
+  color: var(--code-number) !important;
+}
+
+.highlight .o,
+.highlight .p {
+  color: var(--code-operator) !important;
+}
+
+.highlight .nc,
+.highlight .nn,
+.highlight .ne,
+.highlight .no {
+  color: var(--code-class) !important;
+}
+
+.highlight .na,
+.highlight .nb,
+.highlight .ni,
+.highlight .nv,
+.highlight .vc,
+.highlight .vg,
+.highlight .vi,
+.highlight .vm {
+  color: var(--code-variable) !important;
+}
+
+.highlight .bp,
+.highlight .kc,
+.highlight .mh {
+  color: var(--code-constant) !important;
+}
+
+.highlight .err {
+  color: #b42318 !important;
+  background: rgb(248 81 73 / 12%);
+}
+
+html[data-mode='dark'] .highlight .err {
+  color: #ffb4ab !important;
+  background: rgb(255 85 85 / 15%);
+}
+
+.highlight,
+.highlight .w,
+.highlight .n,
+.highlight .nx,
+.highlight .nt {
+  color: var(--code-fg);
+}
+
+.highlight .lineno,
+.highlight .gutter,
+.highlight td.gl {
+  color: var(--code-muted) !important;
+  opacity: 0.9;
+}
+
+/* Inline code: same palette, no window header */
+:not(pre) > code.highlighter-rouge,
+p code.highlighter-rouge,
+li code.highlighter-rouge,
+td code.highlighter-rouge {
+  color: var(--code-inline-fg) !important;
+  background: var(--code-inline-bg) !important;
+  border: 1px solid var(--code-border);
+  border-radius: 5px;
+  padding: 0.12em 0.38em;
+  font-size: 0.88em;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    monospace;
+  overflow-wrap: anywhere;
+  box-shadow: none;
+}
+
+a > code.highlighter-rouge {
+  color: inherit !important;
+}
+
+@media (max-width: 576px) {
+  .highlight pre,
+  .highlighter-rouge pre,
+  figure.highlight pre {
+    padding: 0.8rem;
+    font-size: 0.8rem;
+  }
+  .code-header {
+    min-height: 38px;
+    padding: 0.45rem 0.7rem;
+  }
+}
