@@ -6,8 +6,6 @@ tags: [cpp, data compression, huffman, lzw, rle, algorithms]
 math: true
 ---
 
-<link rel="stylesheet" href="/assets/css/custom.css">
-
 Imagine you need to send a 50 MB file to a friend, but your connection is painfully slow. Or picture a server storing millions of images - without compression, costs would be astronomical. Every time you download a ZIP file, stream a YouTube video, or send a photo on Messenger, <span class = "txt-main">data compression algorithms</span> are silently working behind the scenes to make it all possible. In this post, I'll walk through the core concepts - from the elegantly simple RLE to the surprisingly clever Adaptive Huffman - with real low-level implementations and diagrams to make everything click.
 
 ## 1. What is Data Compression?
