@@ -6,14 +6,14 @@ tags: [overfitting, data-leakage, generalization, bias-variance, cross-validatio
 math: true
 ---
 
-Here is a result I produced while writing this post: a classifier that scores **99.0% cross-validated accuracy** on a dataset where the labels are *pure coin flips*. Fifty samples, 5,000 features of random Gaussian noise, no signal anywhere. The code ran without a single warning. Change one line, and the same pipeline reports **49.7%**, which is the truth.
+Here is a result I produced while writing this post: a classifier that scores <span class="txt-highlight">99.0% cross-validated accuracy</span> on a dataset where the labels are *pure coin flips*. Fifty samples, 5,000 features of random Gaussian noise, no signal anywhere. The code ran without a single warning. Change one line, and the same pipeline reports <span class="txt-highlight">49.7%</span>, which is the truth.
  
 And here is a second one: a degree-15 polynomial that fits its 30 training points with a mean squared error of **0.009**, and then scores **70.3** on fresh data from the same source. That is about 1,170 times worse than predicting with the true curve itself, which scores 0.060 on the same test points.
 
 These are the two ways a machine learning model lies to you:
  
-- **Overfitting**: the model memorises its training data, so the *training* score flatters it.
-- **Data leakage**: information from the evaluation data sneaks into training, so even the *test* score flatters it.
+- <span class="txt-main">Overfitting</span>: the model memorises its training data, so the *training* score flatters it.
+- <span class="txt-main">Data leakage</span>: information from the evaluation data sneaks into training, so even the *test* score flatters it.
 
 The first is the classic textbook villain. The second is worse, because it disables the very alarm you use to detect the first. In this post I document what I learned about both from my course (Chapter 8 of Vũ Hữu Tiệp's *Machine Learning cơ bản*), then go further: I derive the math, rebuild the experiments from scratch in C++ and Python, fact-check the textbook against the research literature, and show the geometry behind each idea. Everything quoted below is real output from code you can run yourself.
 
@@ -21,7 +21,7 @@ The first is the classic textbook villain. The second is worse, because it disab
 
 ### 1.1 Training is a proxy, not the goal
 
-In **supervised learning** we have $N$ training pairs $(\mathbf{x}_i, y_i)$ and look for a function $f$ such that $y_i \approx f(\mathbf{x}_i)$. The natural move is to choose the parameters $\boldsymbol{\theta}$ that minimise the **empirical risk**, the average loss on the training set:
+In <span class="txt-name">supervised learning</span> we have $N$ training pairs $(\mathbf{x}_i, y_i)$ and look for a function $f$ such that $y_i \approx f(\mathbf{x}_i)$. The natural move is to choose the parameters $\boldsymbol{\theta}$ that minimise the **empirical risk**, the average loss on the training set:
  
 $$\hat{R}(\boldsymbol{\theta}) = \frac{1}{N}\sum_{i=1}^{N} \ell\big(y_i, f_{\boldsymbol{\theta}}(\mathbf{x}_i)\big)$$
  
@@ -55,7 +55,7 @@ The averaging matters (the book makes this point too): training and test sets ca
 
 ### 2.1 A polynomial can always win on training data
 
-The textbook builds its intuition on a classical fact: **Lagrange interpolation**. Given $N$ points $(x_1, y_1), \dots, (x_N, y_N)$ with distinct $x_i$, the polynomial
+The textbook builds its intuition on a classical fact: <span class="txt-name">Lagrange interpolation</span>. Given $N$ points $(x_1, y_1), \dots, (x_N, y_N)$ with distinct $x_i$, the polynomial
  
 $$P(x) = \sum_{i=1}^{N} y_i \prod_{j \ne i} \frac{x - x_j}{x_i - x_j}$$
  
@@ -119,9 +119,10 @@ Two things here are worth explaining rather than smoothing over:
  
 - **Why is degree 3's bias exactly zero but degree 6's not?** The true function *is* a cubic, so every degree $\ge 3$ contains it and has zero true bias. The small nonzero values from degree 6 on are a Monte Carlo artefact: my estimate uses the average of $S = 500$ fits, and the estimated bias² is inflated by roughly $\text{Var}/S$. At degree 12 that is $16{,}092 / 500 \approx 32$, the same order as the reported 17.3. When variance is astronomical, even estimating the *average* model becomes unstable.
 - **Why does variance explode so violently at high degree?** Because a high-degree polynomial must extrapolate between and beyond the training points, and $x^{12}$ amplifies tiny coefficient changes into enormous swings near $x = \pm 1$. That's the edge behaviour visible in Figure 8.1(d) of the textbook and in my degree-15 panel above.
+
 ### 3.3 More data is a variance cure
  
-If variance comes from having too few points to pin the model down, then more points should shrink it. This is what **learning curves** show: error as a function of training-set size, with model capacity held fixed.
+If variance comes from having too few points to pin the model down, then more points should shrink it. This is what <span class="txt-special">learning curves</span> show: error as a function of training-set size, with model capacity held fixed.
  
 ![Learning curves for degree 3 and degree 12](/assets/img/AI/ML/Fundamentals/2-overfitting/of-learning-curves.png)
 _Median train and test MSE over 200 repetitions. With the right capacity (left), the gap is small from the start. With too much capacity (right), the gap is enormous at small n and closes as data grows._
@@ -134,7 +135,7 @@ Reading a learning curve also tells you what to do next:
  
 ### 4.1 The validation set
  
-We can't use the test set to choose the degree (that would make it a training set in disguise), and we can't use training error (it always prefers the biggest model). The textbook's answer is the **validation set**: carve a subset out of the training data, fit on the rest, evaluate on the carved-out part. The book's analogy is good: when revising for an exam, you study some past papers *with* the solutions and attempt the others *without* them, to see where you really stand.
+We can't use the test set to choose the degree (that would make it a training set in disguise), and we can't use training error (it always prefers the biggest model). The textbook's answer is the <span class="txt-special">validation set</span>: carve a subset out of the training data, fit on the rest, evaluate on the carved-out part. The book's analogy is good: when revising for an exam, you study some past papers *with* the solutions and attempt the others *without* them, to see where you really stand.
  
 Here is that procedure on my data, degree 0 through 15:
  
@@ -149,7 +150,7 @@ _Training error (blue) only goes down. Validation (orange) and test (green) erro
 | 9      | 0.02076   | 0.1059           | 0.1245              |
 | 15     | 0.00906   | 81.2024          | 70.3446             |
  
-The validation set chooses **degree 4**; the test set would have preferred **degree 3**. That's the same "three or four" conclusion the textbook reaches, and the difference costs only 0.0007 in test MSE. Validation is a noisy estimate, so it picks a *good* model, not necessarily *the best* one.
+The validation set chooses <span class="txt-highlight">degree 4</span>; the test set would have preferred <span class="txt-highlight">degree 3</span>. That's the same "three or four" conclusion the textbook reaches, and the difference costs only 0.0007 in test MSE. Validation is a noisy estimate, so it picks a *good* model, not necessarily *the best* one.
  
 A curiosity: degrees 7 and 8 print identical errors to four decimals. That isn't a bug (I cross-checked the C++ solver against NumPy's `polyfit`, which agrees to every printed digit). The degree-8 least-squares fit simply assigns $x^8$ a coefficient of $-0.037$, so the extra term barely changes anything.
  
@@ -188,7 +189,7 @@ _Left: validation error bottoms out at iteration 1,623 and climbs afterwards, wh
 | After 10,000,000 iterations              | 0.0156    | 0.1733     | 0.1661     |
 | Exact least-squares solution (C++ table) | 0.00906   | 81.2024    | 70.3446    |
  
-Here's the surprising part: after **ten million** iterations, gradient descent is still nowhere near the exact least-squares solution, whose test MSE is 70.3. Why? After standardizing the features, the Hessian of the loss has eigenvalues from 15.1 down to $1.98 \times 10^{-11}$, a **condition number** of about $7.6 \times 10^{11}$. With $\eta = 1/L$, the error along the eigenvector with eigenvalue $\mu_i$ shrinks by a factor $(1 - \eta\mu_i)$ per step, so the flattest directions need on the order of $10^{12}$ iterations to be fitted. And those flat directions are exactly the high-frequency wiggles that encode noise.
+Here's the surprising part: after <span class="txt-highlight">ten million</span> iterations, gradient descent is still nowhere near the exact least-squares solution, whose test MSE is 70.3. Why? After standardizing the features, the Hessian of the loss has eigenvalues from 15.1 down to $1.98 \times 10^{-11}$, a **condition number** of about $7.6 \times 10^{11}$. With $\eta = 1/L$, the error along the eigenvector with eigenvalue $\mu_i$ shrinks by a factor $(1 - \eta\mu_i)$ per step, so the flattest directions need on the order of $10^{12}$ iterations to be fitted. And those flat directions are exactly the high-frequency wiggles that encode noise.
  
 This gives a precise link between early stopping and the penalty methods below. In the eigenbasis of the Hessian (eigenvalues $\mu_i$), starting from zero, and with the ridge penalty $\lambda$ expressed in the same normalisation as the loss:
  
@@ -257,9 +258,9 @@ Ridge kept all 10 coefficients non-zero at every penalty I tried. This is why th
  
 ### 6.1 Definition
  
-Everything so far assumed one thing: that the validation and test sets are *genuinely unseen*. **Data leakage** is what happens when they aren't. The standard definition comes from Kaufman, Rosset, Perlich and Stitelman (*ACM TKDD*, 2012): leakage is the introduction of information about the prediction target that would not legitimately be available at prediction time. They open their paper by noting it has been called one of the top ten data mining mistakes.
+Everything so far assumed one thing: that the validation and test sets are *genuinely unseen*. <span class="txt-highlight">Data leakage</span> is what happens when they aren't. The standard definition comes from Kaufman, Rosset, Perlich and Stitelman (*ACM TKDD*, 2012): leakage is the introduction of information about the prediction target that would not legitimately be available at prediction time. They open their paper by noting it has been called one of the top ten data mining mistakes.
  
-The textbook's chapter doesn't mention leakage at all, even though its whole validation strategy depends on avoiding it. That's a significant gap, because leakage is not a beginner's problem. Kapoor and Narayanan (*Patterns*, 2023) surveyed reviews across the sciences and found leakage affecting **at least 294 papers in 17 fields**. In their own case study on civil-war prediction, every paper that claimed complex ML beat logistic regression turned out to contain leakage; once fixed, the complex models did no better than the baseline.
+The textbook's chapter doesn't mention leakage at all, even though its whole validation strategy depends on avoiding it. That's a significant gap, because leakage is not a beginner's problem. Kapoor and Narayanan (*Patterns*, 2023) surveyed reviews across the sciences and found leakage affecting <span class="txt-highlight">at least 294 papers in 17 fields</span>. In their own case study on civil-war prediction, every paper that claimed complex ML beat logistic regression turned out to contain leakage; once fixed, the complex models did no better than the baseline.
  
 ### 6.2 Overfitting vs. leakage, side by side
  
@@ -322,7 +323,7 @@ Every scenario below has labels that are **independent of the features**, so the
 ![Bar chart of reported leaky accuracy versus honest accuracy for five leakage scenarios](/assets/img/AI/ML/Fundamentals/2-overfitting/of-leakage-results.png)
 _The orange bars are what a leaky pipeline would report. The blue bars come from the same data with a leak-free procedure. Generated by `figures.py` from `experiments.py`._
  
-**1. Feature selection before cross-validation (L1.3).** This replicates the "wrong way to do cross-validation" example from Hastie, Tibshirani and Friedman's *Elements of Statistical Learning* (Section 7.10.2): 50 samples, 5,000 noise features, keep the 100 most correlated with the label, classify with 1-nearest-neighbour. ESL reports a cross-validated error of about 3% against a true error of 50%. Over 20 random seeds I got:
+<span class="txt-special">1. Feature selection before cross-validation (L1.3).</span> This replicates the "wrong way to do cross-validation" example from Hastie, Tibshirani and Friedman's *Elements of Statistical Learning* (Section 7.10.2): 50 samples, 5,000 noise features, keep the 100 most correlated with the label, classify with 1-nearest-neighbour. ESL reports a cross-validated error of about 3% against a true error of 50%. Over 20 random seeds I got:
  
 ```text
 wrong CV accuracy: 0.990 ± 0.012  (min 0.96, max 1.00)
@@ -348,9 +349,9 @@ right = cross_val_score(pipe, X, y, cv=cv).mean()
  
 The scikit-learn documentation's "Common pitfalls" page makes the same point with a similar setup (random features, random labels) and reports 0.76 for the leaky version vs. 0.5 for the pipeline.
  
-**2. Target encoding fitted on all rows (L1.2).** **Target encoding** replaces a categorical value with the mean target of its category, which is popular for high-cardinality columns like user or product IDs. With 2,000 rows, 1,000 categories (about two rows each) and a random binary target, encoding with means computed over *all* rows lets each validation row's own label leak into its feature: **0.775** reported vs. **0.507** with scikit-learn's `TargetEncoder` inside a pipeline. (`TargetEncoder.fit_transform` also uses internal cross-fitting, so even on the training fold a row never sees its own label.)
+<span class="txt-special">2. Target encoding fitted on all rows (L1.2).</span> **Target encoding** replaces a categorical value with the mean target of its category, which is popular for high-cardinality columns like user or product IDs. With 2,000 rows, 1,000 categories (about two rows each) and a random binary target, encoding with means computed over *all* rows lets each validation row's own label leak into its feature: **0.775** reported vs. **0.507** with scikit-learn's `TargetEncoder` inside a pipeline. (`TargetEncoder.fit_transform` also uses internal cross-fitting, so even on the training fold a row never sees its own label.)
  
-**3. The same patient in train and test (L3.2).** Simulate 100 patients with 10 records each; records of one patient are near-duplicates, and each patient's diagnosis is random. A random record-level `KFold` puts most of a patient's records in training and a few in validation, so the model just recognises the patient: **0.999**. Splitting by patient with `GroupKFold` gives **0.502**.
+<span class="txt-special">3. The same patient in train and test (L3.2).</span> Simulate 100 patients with 10 records each; records of one patient are near-duplicates, and each patient's diagnosis is random. A random record-level `KFold` puts most of a patient's records in training and a few in validation, so the model just recognises the patient: **0.999**. Splitting by patient with `GroupKFold` gives **0.502**.
  
 ```python
 from sklearn.model_selection import KFold, GroupKFold
@@ -361,9 +362,9 @@ patient_cv = cross_val_score(model, X, y, cv=GroupKFold(5), groups=patient_id)
  
 This is the most common leak in medical imaging (many slices or scans per patient), speech (many clips per speaker) and any dataset with repeated measurements.
  
-**4. A feature that peeks at the future (L2 / L3.1).** On a pure random walk, predict whether tomorrow's value goes up. Using past returns only: **0.494**, as it should be. Add one innocent-looking feature, the gap between today's value and a *centered* 5-day moving average (`rolling(5, center=True)`, which averages days $t-2$ to $t+2$): **0.844**. Note that I used `TimeSeriesSplit`, the *correct* splitter for time series. **A correct split does not protect you from a leaky feature**: the feature itself contains $x_{t+1}$.
+<span class="txt-special">4. A feature that peeks at the future (L2 / L3.1).</span> On a pure random walk, predict whether tomorrow's value goes up. Using past returns only: **0.494**, as it should be. Add one innocent-looking feature, the gap between today's value and a *centered* 5-day moving average (`rolling(5, center=True)`, which averages days $t-2$ to $t+2$): **0.844**. Note that I used `TimeSeriesSplit`, the *correct* splitter for time series. **A correct split does not protect you from a leaky feature**: the feature itself contains $x_{t+1}$.
  
-**5. Overfitting the validation set (the winner's curse).** Generate 1,000 "models" that are literally coin flips, evaluate each on the same 100-sample validation set, and keep the best. Across 20 runs, the winner scored **0.661 ± 0.022** on validation and **0.501** on a fresh 10,000-sample test set. Nothing leaked from the test set; the validation score was inflated purely by *selecting the maximum of many noisy estimates*. This is why heavily tuned models need a final, untouched test set, and why Kaggle's public leaderboard can mislead people who submit too often.
+<span class="txt-special">5. Overfitting the validation set (the winner's curse).</span> Generate 1,000 "models" that are literally coin flips, evaluate each on the same 100-sample validation set, and keep the best. Across 20 runs, the winner scored **0.661 ± 0.022** on validation and **0.501** on a fresh 10,000-sample test set. Nothing leaked from the test set; the validation score was inflated purely by *selecting the maximum of many noisy estimates*. This is why heavily tuned models need a final, untouched test set, and why Kaggle's public leaderboard can mislead people who submit too often.
  
 ### 6.6 Not every leak is equally dangerous
  
