@@ -12,36 +12,36 @@
    .txt-function   → Function names / code-like expressions
 
    Chirpy supports light/dark mode through data-mode.
+   Markdown inline code is styled in _code-themes.scss.
    ========================================================= */
 
 /* =========================================================
-   1. COLOR TOKENS — LIGHT MODE
+   1. COLOR TOKENS
+   =========================================================
+   --fn-* is used instead of --code-* so these tokens do not
+   collide with the code-block palette in _code-themes.scss.
    ========================================================= */
 
-:root {
+@mixin light-tokens {
   --txt-main: #2563eb;
+
   --txt-special: #dc2626;
   --txt-special-bg: #fef2f2;
 
-  --txt-highlight: #d97706;
+  --txt-highlight: #b45309;
 
   --txt-name: #7c3aed;
 
   --txt-basic: #0f766e;
 
-  --txt-operation: #0891b2;
+  --txt-operation: #0e7490;
 
-  /* Inline code / function */
-  --code-text: #1f2937;
-  --code-bg: #f1f5f9;
-  --code-border: #e2e8f0;
+  --fn-text: #1f2937;
+  --fn-bg: #f1f5f9;
+  --fn-border: #e2e8f0;
 }
 
-/* =========================================================
-   2. DARK MODE
-   ========================================================= */
-
-html[data-mode='dark'] {
+@mixin dark-tokens {
   --txt-main: #60a5fa;
 
   --txt-special: #fb7185;
@@ -55,41 +55,30 @@ html[data-mode='dark'] {
 
   --txt-operation: #22d3ee;
 
-  --code-text: #e2e8f0;
-  --code-bg: #1e293b;
-  --code-border: #334155;
+  --fn-text: #e2e8f0;
+  --fn-bg: #1e293b;
+  --fn-border: #334155;
 }
 
-/* =========================================================
-   3. AUTOMATIC SYSTEM DARK MODE
-   =========================================================
-   Your _config.yml currently allows Chirpy to follow the
-   operating system theme when no explicit mode is selected.
-   ========================================================= */
+/* Light is the default, also used when the reader picks light on a dark OS. */
+:root {
+  @include light-tokens;
+}
 
+/* Dark picked from the toggle. */
+html[data-mode='dark'] {
+  @include dark-tokens;
+}
+
+/* Dark OS with no explicit choice: Chirpy leaves data-mode unset. */
 @media (prefers-color-scheme: dark) {
   html:not([data-mode]) {
-    --txt-main: #60a5fa;
-
-    --txt-special: #fb7185;
-    --txt-special-bg: #2b1719;
-
-    --txt-highlight: #fbbf24;
-
-    --txt-name: #c084fc;
-
-    --txt-basic: #2dd4bf;
-
-    --txt-operation: #22d3ee;
-
-    --code-text: #e2e8f0;
-    --code-bg: #1e293b;
-    --code-border: #334155;
+    @include dark-tokens;
   }
 }
 
 /* =========================================================
-   4. MAIN TOPIC
+   2. MAIN TOPIC
    =========================================================
    Example:
    <span class="txt-main">Data Compression</span>
@@ -101,7 +90,7 @@ html[data-mode='dark'] {
 }
 
 /* =========================================================
-   5. SPECIAL / MUST REMEMBER
+   3. SPECIAL / MUST REMEMBER
    =========================================================
    More visually prominent than normal emphasis.
    ========================================================= */
@@ -114,10 +103,13 @@ html[data-mode='dark'] {
 
   padding: 0.05em 0.2em;
   border-radius: 0.25em;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* =========================================================
-   6. NORMAL HIGHLIGHT
+   4. NORMAL HIGHLIGHT
    =========================================================
    Used for emphasis inside a sentence.
    ========================================================= */
@@ -128,7 +120,7 @@ html[data-mode='dark'] {
 }
 
 /* =========================================================
-   7. NAMED CONCEPT / ALGORITHM / METHOD
+   5. NAMED CONCEPT / ALGORITHM / METHOD
    =========================================================
    Examples:
    - Binary Search Tree
@@ -143,7 +135,7 @@ html[data-mode='dark'] {
 }
 
 /* =========================================================
-   8. BASIC / FOUNDATIONAL CONCEPT
+   6. BASIC / FOUNDATIONAL CONCEPT
    =========================================================
    Examples:
    - Array
@@ -159,7 +151,7 @@ html[data-mode='dark'] {
 }
 
 /* =========================================================
-   9. OPERATION
+   7. OPERATION
    =========================================================
    Examples:
    - searching
@@ -174,22 +166,25 @@ html[data-mode='dark'] {
 }
 
 /* =========================================================
-   10. FUNCTION / INLINE CODE
+   8. FUNCTION / CODE-LIKE EXPRESSION
    =========================================================
    Example:
    <span class="txt-function">cosine_similarity()</span>
+
+   Stays inline so long names can wrap on narrow screens;
+   box-decoration-break keeps the border on every line piece.
    ========================================================= */
 
 .txt-function {
-  display: inline-block;
+  display: inline;
 
   padding: 0.1em 0.4em;
 
-  border: 1px solid var(--code-border);
+  border: 1px solid var(--fn-border);
   border-radius: 0.35em;
 
-  background-color: var(--code-bg);
-  color: var(--code-text);
+  background-color: var(--fn-bg);
+  color: var(--fn-text);
 
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
@@ -198,38 +193,18 @@ html[data-mode='dark'] {
   font-size: 0.9em;
   font-weight: 600;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* =========================================================
-   11. NORMAL MARKDOWN INLINE CODE
-   =========================================================
-   This makes:
-
-       `cosine_similarity()`
-
-   visually consistent with .txt-function.
-   ========================================================= */
-
-:not(pre) > code {
-  padding: 0.1em 0.4em;
-
-  border: 1px solid var(--code-border);
-  border-radius: 0.35em;
-
-  background-color: var(--code-bg);
-  color: var(--code-text);
-
-  font-size: 0.9em;
-}
-
-/* =========================================================
-   12. OPTIONAL — PREVENT INLINE CODE FROM BECOMING
-       TOO SMALL ON MOBILE
+   9. MOBILE
    ========================================================= */
 
 @media (max-width: 576px) {
-  .txt-function,
-  :not(pre) > code {
+  .txt-function {
     font-size: 0.88em;
     padding: 0.08em 0.32em;
   }

@@ -1,15 +1,20 @@
 /* macOS-inspired code blocks: Dracula dark + GitHub Light */
 
-:root {
+/* =========================================================
+   1. COLOR TOKENS
+   ========================================================= */
+
+@mixin light-tokens {
   --code-bg: #f6f8fa;
   --code-fg: #1f2328;
   --code-border: #d0d7de;
   --code-header-bg: #eef1f4;
   --code-header-fg: #57606a;
   --code-muted: #6e7781;
+  --code-shadow: 0 4px 14px rgb(31 35 40 / 8%);
   --code-inline-bg: #eff1f3;
   --code-inline-fg: #cf222e;
-  --code-comment: #6e7781;
+  --code-comment: #57606a;
   --code-keyword: #cf222e;
   --code-name: #8250df;
   --code-string: #0a3069;
@@ -19,18 +24,25 @@
   --code-class: #953800;
   --code-variable: #1f2328;
   --code-constant: #0550ae;
+  --code-err-fg: #b42318;
+  --code-err-bg: rgb(248 81 73 / 12%);
+  --code-ins-fg: #116329;
+  --code-ins-bg: #dafbe1;
+  --code-del-fg: #82071e;
+  --code-del-bg: #ffebe9;
 }
 
-html[data-mode='dark'] {
+@mixin dark-tokens {
   --code-bg: #282a36;
   --code-fg: #f8f8f2;
   --code-border: #44475a;
   --code-header-bg: #21222c;
   --code-header-fg: #c7c9d3;
   --code-muted: #6272a4;
+  --code-shadow: 0 5px 18px rgb(0 0 0 / 18%);
   --code-inline-bg: #343746;
   --code-inline-fg: #ff79c6;
-  --code-comment: #6272a4;
+  --code-comment: #8592c2;
   --code-keyword: #ff79c6;
   --code-name: #50fa7b;
   --code-string: #f1fa8c;
@@ -40,61 +52,70 @@ html[data-mode='dark'] {
   --code-class: #8be9fd;
   --code-variable: #f8f8f2;
   --code-constant: #bd93f9;
+  --code-err-fg: #ffb4ab;
+  --code-err-bg: rgb(255 85 85 / 15%);
+  --code-ins-fg: #50fa7b;
+  --code-ins-bg: rgb(80 250 123 / 12%);
+  --code-del-fg: #ff5555;
+  --code-del-bg: rgb(255 85 85 / 15%);
 }
 
-/* Follow the OS when Chirpy has no explicit data-mode. */
+/* Light is the default, also used when the reader picks light on a dark OS. */
+:root {
+  @include light-tokens;
+}
+
+/* Dark picked from the toggle. */
+html[data-mode='dark'] {
+  @include dark-tokens;
+}
+
+/* Dark OS with no explicit choice: Chirpy leaves data-mode unset. */
 @media (prefers-color-scheme: dark) {
   html:not([data-mode]) {
-    --code-bg: #282a36;
-    --code-fg: #f8f8f2;
-    --code-border: #44475a;
-    --code-header-bg: #21222c;
-    --code-header-fg: #c7c9d3;
-    --code-muted: #6272a4;
-    --code-inline-bg: #343746;
-    --code-inline-fg: #ff79c6;
-    --code-comment: #6272a4;
-    --code-keyword: #ff79c6;
-    --code-name: #50fa7b;
-    --code-string: #f1fa8c;
-    --code-number: #bd93f9;
-    --code-operator: #ff79c6;
-    --code-punctuation: #f8f8f2;
-    --code-class: #8be9fd;
-    --code-variable: #f8f8f2;
-    --code-constant: #bd93f9;
+    @include dark-tokens;
   }
 }
 
-/* Outer window */
-.highlighter-rouge,
-div.highlight,
+/* =========================================================
+   2. OUTER WINDOW
+   Chirpy markup: div.highlighter-rouge > .code-header + div.highlight
+   Only the outer div is the window; the inner .highlight is flat.
+   ========================================================= */
+
+div.highlighter-rouge,
 figure.highlight {
   color: var(--code-fg);
-  background: var(--code-bg);
+  background-color: var(--code-bg);
   border: 1px solid var(--code-border);
   border-radius: 12px;
   overflow: hidden;
   margin-top: 1rem;
   margin-bottom: 1.35rem;
-  box-shadow: 0 4px 14px rgb(31 35 40 / 8%);
+  /* Replaces Chirpy's 1px ring so the border is not doubled. */
+  box-shadow: var(--code-shadow);
 }
 
-html[data-mode='dark'] .highlighter-rouge,
-html[data-mode='dark'] div.highlight,
-html[data-mode='dark'] figure.highlight {
-  box-shadow: 0 5px 18px rgb(0 0 0 / 18%);
+/* Chirpy sets the code area background inside html[data-mode] scopes,
+   so !important is required for the Dracula/GitHub background to apply. */
+.highlight,
+.highlight .w {
+  color: var(--code-fg) !important;
+  background-color: var(--code-bg) !important;
 }
 
 .highlight {
-  color: var(--code-fg);
-  background: var(--code-bg);
   overflow-x: auto;
+}
+
+div.highlighter-rouge .highlight {
+  margin: 0;
+  border: 0;
   border-radius: 0 0 12px 12px;
+  box-shadow: none;
 }
 
 .highlight pre,
-.highlighter-rouge pre,
 figure.highlight pre {
   color: var(--code-fg);
   background: transparent !important;
@@ -107,8 +128,7 @@ figure.highlight pre {
 }
 
 .highlight code,
-.highlight pre code,
-.highlighter-rouge pre code {
+.highlight pre code {
   color: var(--code-fg);
   background: transparent !important;
   font-family:
@@ -118,40 +138,66 @@ figure.highlight pre {
   text-shadow: none;
 }
 
-/* macOS title bar. Dots are decorative; Chirpy's copy control is retained. */
+/* =========================================================
+   3. MACOS TITLE BAR
+   Selectors start with div.highlighter-rouge to outrank Chirpy's
+   div[class^='language-'] .code-header rules at every width.
+   ========================================================= */
+
 .code-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   min-height: 42px;
+  margin: 0;
   padding: 0.55rem 0.85rem;
   color: var(--code-header-fg);
   background: var(--code-header-bg);
   border-bottom: 1px solid var(--code-border);
-  border-radius: 11px 11px 0 0;
   font-size: 0.78rem;
   line-height: 1.2;
 }
 
-.code-header::before {
+div.highlighter-rouge .code-header::before {
   content: '';
   display: block;
   flex: 0 0 52px;
   width: 52px;
   height: 12px;
-  background:
+  margin-left: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  background-image:
     radial-gradient(circle at 6px 6px, #ff5f57 0 5px, transparent 5.4px),
     radial-gradient(circle at 26px 6px, #febc2e 0 5px, transparent 5.4px),
     radial-gradient(circle at 46px 6px, #28c840 0 5px, transparent 5.4px);
 }
 
-.code-header button,
-.code-header .copy-code-button,
-.code-header .code-copy {
+div.highlighter-rouge .code-header span {
+  margin-left: 0;
+}
+
+/* Chirpy colors the language label and icons with its own grey tokens. */
+div.highlighter-rouge .code-header span::after {
+  color: var(--code-header-fg);
+}
+
+div.highlighter-rouge .code-header span i,
+div.highlighter-rouge .code-header button:not([timeout]) i {
+  color: var(--code-muted);
+}
+
+.code-header button {
   margin-left: auto;
 }
 
-/* Rouge token colors */
+/* =========================================================
+   4. ROUGE TOKEN COLORS
+   Chirpy scopes its token colors under html[data-mode] (0,3,1),
+   so every token rule here needs !important.
+   ========================================================= */
+
 .highlight .c,
 .highlight .c1,
 .highlight .cm,
@@ -165,18 +211,20 @@ figure.highlight pre {
 }
 
 .highlight .k,
-.highlight .kc,
 .highlight .kd,
 .highlight .kn,
 .highlight .kp,
 .highlight .kr,
 .highlight .kt,
-.highlight .ow {
+.highlight .kv,
+.highlight .ow,
+.highlight .sa {
   color: var(--code-keyword) !important;
 }
 
 .highlight .nf,
-.highlight .fm {
+.highlight .fm,
+.highlight .nd {
   color: var(--code-name) !important;
 }
 
@@ -190,7 +238,9 @@ figure.highlight pre {
 .highlight .sh,
 .highlight .si,
 .highlight .sr,
-.highlight .ss {
+.highlight .ss,
+.highlight .sx,
+.highlight .dl {
   color: var(--code-string) !important;
 }
 
@@ -200,13 +250,18 @@ figure.highlight pre {
 .highlight .mh,
 .highlight .mi,
 .highlight .mo,
+.highlight .mx,
 .highlight .il {
   color: var(--code-number) !important;
 }
 
-.highlight .o,
-.highlight .p {
+.highlight .o {
   color: var(--code-operator) !important;
+}
+
+.highlight .p,
+.highlight .pi {
+  color: var(--code-punctuation) !important;
 }
 
 .highlight .nc,
@@ -228,41 +283,54 @@ figure.highlight pre {
 }
 
 .highlight .bp,
-.highlight .kc,
-.highlight .mh {
+.highlight .kc {
   color: var(--code-constant) !important;
 }
 
-.highlight .err {
-  color: #b42318 !important;
-  background: rgb(248 81 73 / 12%);
-}
-
-html[data-mode='dark'] .highlight .err {
-  color: #ffb4ab !important;
-  background: rgb(255 85 85 / 15%);
-}
-
-.highlight,
-.highlight .w,
 .highlight .n,
 .highlight .nx,
 .highlight .nt {
-  color: var(--code-fg);
+  color: var(--code-fg) !important;
+}
+
+.highlight .err {
+  color: var(--code-err-fg) !important;
+  background-color: var(--code-err-bg) !important;
+}
+
+/* Diff blocks */
+.highlight .gi {
+  color: var(--code-ins-fg) !important;
+  background-color: var(--code-ins-bg) !important;
+}
+
+.highlight .gd {
+  color: var(--code-del-fg) !important;
+  background-color: var(--code-del-bg) !important;
+}
+
+.highlight .gh,
+.highlight .gu {
+  color: var(--code-number) !important;
+  background-color: transparent !important;
+  font-weight: 700;
+}
+
+.highlight .gp {
+  color: var(--code-muted) !important;
 }
 
 .highlight .lineno,
 .highlight .gutter,
 .highlight td.gl {
   color: var(--code-muted) !important;
-  opacity: 0.9;
 }
 
-/* Inline code: same palette, no window header */
-:not(pre) > code.highlighter-rouge,
-p code.highlighter-rouge,
-li code.highlighter-rouge,
-td code.highlighter-rouge {
+/* =========================================================
+   5. INLINE CODE
+   ========================================================= */
+
+:not(pre) > code.highlighter-rouge {
   color: var(--code-inline-fg) !important;
   background: var(--code-inline-bg) !important;
   border: 1px solid var(--code-border);
@@ -282,11 +350,11 @@ a > code.highlighter-rouge {
 
 @media (max-width: 576px) {
   .highlight pre,
-  .highlighter-rouge pre,
   figure.highlight pre {
     padding: 0.8rem;
     font-size: 0.8rem;
   }
+
   .code-header {
     min-height: 38px;
     padding: 0.45rem 0.7rem;
