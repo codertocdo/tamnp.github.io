@@ -60,19 +60,20 @@
   --fn-border: #334155;
 }
 
-/* Light is the default, also used when the reader picks light on a dark OS. */
+/* Light: default, and whenever the reader picks light. */
 :root {
   @include light-tokens;
 }
 
-/* Dark picked from the toggle. */
-html[data-mode='dark'] {
+/* Dark: picked by the reader, or resolved from the OS by Chirpy's JS. */
+:root[data-bs-theme='dark'],
+:root[data-mode='dark'] {
   @include dark-tokens;
 }
 
-/* Dark OS with no explicit choice: Chirpy leaves data-mode unset. */
+/* Fallback before JS runs or with JS disabled: follow the OS. */
 @media (prefers-color-scheme: dark) {
-  html:not([data-mode]) {
+  :root:not([data-bs-theme]):not([data-mode]) {
     @include dark-tokens;
   }
 }
