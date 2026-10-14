@@ -22,14 +22,14 @@ Suppose you want to estimate the price $y$ of a house from three measurements: i
 
 $$\hat{y} = f(\mathbf{x}) = w_1x_1 + w_2x_2 + w_3x_3 + b = \mathbf{w}^\top\mathbf{x} + b$$
  
-- $\mathbf{x} = [x_1, x_2, x_3]^\top$ is the **feature vector** (the input).
+- $\mathbf{x} = [x_1, x_2, x_3]^\top$ is the <span class="txt-highlight">feature vector</span> (the input).
 - $\mathbf{w} = [w_1, w_2, w_3]^\top$ is the **weight vector**, and $b$ is the **bias** or **intercept**. Together they are the **model parameters** we must learn from data.
 - $y$ is the **ground truth** (the real price), and $\hat{y}$ is the **prediction**. They will almost never be equal; the goal is to make them close.
 
 Two vocabulary points before going on:
  
-- This is a **regression** problem because the output is a continuous number (a price can be any positive real value), as opposed to **classification**, where the output is one of a few labels.
-- It is **supervised learning** because every training example comes with its correct answer $y$.
+- This is a <span class="txt-name">regression</span> problem because the output is a continuous number (a price can be any positive real value), as opposed to <span class="txt-name">classification</span>, where the output is one of a few labels.
+- It is <span class="txt-highlight">supervised learning</span> because every training example comes with its correct answer $y$.
 
 ### 1.2 Why "regression"? A detour through 1886
 
@@ -57,7 +57,7 @@ Here is the idea that makes linear regression far more powerful than "fitting st
  
 $$\hat{y} = w_0 + w_1x_1 + w_2x_2 + w_3x_1^2 + w_4\sin(x_2) + w_5x_1x_2$$
  
-is curved in $\mathbf{x}$, but it is still a weighted sum of the new features $\phi(\mathbf{x}) = [1, x_1, x_2, x_1^2, \sin x_2, x_1x_2]^\top$, so exactly the same solver applies. Choosing $\phi(x) = [1, x, x^2, \dots, x^p]^\top$ gives **polynomial regression**, which is just linear regression on engineered features.
+is curved in $\mathbf{x}$, but it is still a weighted sum of the new features $\phi(\mathbf{x}) = [1, x_1, x_2, x_1^2, \sin x_2, x_1x_2]^\top$, so exactly the same solver applies. Choosing $\phi(x) = [1, x, x^2, \dots, x^p]^\top$ gives <span class="txt-name">polynomial regression</span>, which is just linear regression on engineered features.
  
 To see this, I generated 60 noisy points from $y = 0.5x^3 - 2x + 2\sin 2x$ and fitted the same least-squares solver with three different feature maps:
 
@@ -173,7 +173,7 @@ The likelihood of the observed targets is a product of Gaussians, and its negati
  
 $$-\log p(\mathbf{y} \mid \bar{X}, \mathbf{w}) = \frac{N}{2}\log(2\pi\sigma^2) + \frac{1}{2\sigma^2}\sum_{i=1}^{N}\left(y_i - \bar{\mathbf{x}}_i^\top\mathbf{w}\right)^2$$
  
-The first term does not depend on $\mathbf{w}$, so **maximising the likelihood is the same as minimising the sum of squared residuals**. Least squares is maximum likelihood under Gaussian noise.
+The first term does not depend on $\mathbf{w}$, so <span class="txt-highlight">maximising the likelihood is the same as minimising the sum of squared residuals</span>. Least squares is maximum likelihood under Gaussian noise.
  
 A second, assumption-lighter result is the <span class="txt-name">Gauss–Markov theorem</span>: if the errors have zero mean, equal variance and are uncorrelated (no normality needed), the least-squares estimator has the smallest variance among all *linear unbiased* estimators. It is "BLUE": the Best Linear Unbiased Estimator.
  
@@ -195,9 +195,9 @@ Placing linear regression next to related methods helped me pin down what it act
  
 Three observations from this table:
  
-- **Despite its name, logistic regression is a classifier.** It reuses the linear score $\mathbf{w}^\top\mathbf{x}$ but squashes it into $(0, 1)$, and the resulting loss has no closed-form minimiser.
-- **Linear regression is parametric; k-NN is not.** Linear regression compresses the training set into $d + 1$ numbers and can then throw the data away; k-NN keeps everything and can fit any shape, at the cost of memory and the scaling sensitivity I measured in the feature engineering post.
-- **A neural network for regression ends in a linear regression.** The last layer is literally $\mathbf{w}^\top h + b$ with a squared loss; everything before it learns the feature map $h_\theta$ that, in Section 2.2, I had to invent by hand.
+- <span class="txt-special">Despite its name, logistic regression is a classifier.</span> It reuses the linear score $\mathbf{w}^\top\mathbf{x}$ but squashes it into $(0, 1)$, and the resulting loss has no closed-form minimiser.
+- <span class="txt-special">Linear regression is parametric; k-NN is not.</span> Linear regression compresses the training set into $d + 1$ numbers and can then throw the data away; k-NN keeps everything and can fit any shape, at the cost of memory and the scaling sensitivity I measured in the feature engineering post.
+- <span class="txt-special">A neural network for regression ends in a linear regression.</span> The last layer is literally $\mathbf{w}^\top h + b$ with a squared loss; everything before it learns the feature map $h_\theta$ that, in Section 2.2, I had to invent by hand.
 
 ## 6. Hands-On Demo: Height Predicts Weight
 
@@ -213,7 +213,7 @@ Test set: (155 cm, 52 kg) and (160 cm, 56 kg). Of course, weight depends on far 
 
 ### 6.2 Four ways to get the same line
 
-**(a) From scratch, with plain loops.** With a single feature, the normal equations reduce to a famous pair of formulas: the slope is the covariance of $x$ and $y$ divided by the variance of $x$, and the line passes through the point of means:
+<span class="txt-special">(a) From scratch, with plain loops.</span> With a single feature, the normal equations reduce to a famous pair of formulas: the slope is the covariance of $x$ and $y$ divided by the variance of $x$, and the line passes through the point of means:
  
 $$w_1 = \frac{\sum_i (x_i - \bar{x})(y_i - \bar{y})}{\sum_i (x_i - \bar{x})^2}, \qquad w_0 = \bar{y} - w_1\bar{x}$$
 
@@ -233,7 +233,8 @@ w0 = my - w1 * mx
 print(f"w1 = {w1:.8f}  w0 = {w0:.8f}")
 ```
 
-**(b) The normal equations, (c) the pseudo-inverse and `lstsq`, (d) scikit-learn:**
+<span class="txt-special">(b) The normal equations, (c) the pseudo-inverse and `lstsq`, (d) scikit-learn:</span>
+
 ```python
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -278,7 +279,7 @@ test  160 cm: true 56 kg, predicted 55.74 kg, error -0.26 kg
 largest train residual: -0.823 kg at 153 cm
 ```
  
-The **coefficient of determination** compares the model's squared error with that of the dumbest possible model, one that always predicts the mean $\bar{y}$:
+The <span class="txt-highlight">coefficient of determination</span> compares the model's squared error with that of the dumbest possible model, one that always predicts the mean $\bar{y}$:
  
 $$R^2 = 1 - \frac{\sum_i (y_i - \hat{y}_i)^2}{\sum_i (y_i - \bar{y})^2}$$
  
@@ -290,7 +291,7 @@ $R^2 = 0.9945$ says the line accounts for 99.45% of the training variance in wei
 ![Anscombe's quartet: four scatter plots with identical regression lines and R squared](/assets/img/AI/ML/Supervised-Learning/2-linear-regression/lr-anscombe.png)
 _I: a reasonable linear fit. II: a curve, so a line is the wrong model. III: a perfect line ruined by one outlier. IV: the slope is decided by a single point._
  
-The only defence is to **plot the data and the residuals**. A score summarises; it does not diagnose.
+The only defence is to <span class="txt-highlight">plot the data and the residuals</span>. A score summarises; it does not diagnose.
  
 ## 7. Where the Straight Line Breaks
  
@@ -318,9 +319,9 @@ Why so fragile? A residual of 30 kg contributes $30^2 = 900$ to the loss, as muc
 | 165 cm (near the middle, $\bar{x} \approx 166.4$) | 0.5345 | −27.383   |
 | 183 cm (right edge)                               | 0.7336 | −61.429   |
  
-An outlier near the centre of the $x$-range mostly lifts the line; one at the edge acts like a lever arm and rotates it. Statisticians call this **leverage**: points with extreme $x$ values have more power over the fit. (Formally, the leverage of point $i$ is the diagonal entry $P_{ii}$ of the hat matrix from Section 3.6.)
+An outlier near the centre of the $x$-range mostly lifts the line; one at the edge acts like a lever arm and rotates it. Statisticians call this <span class="txt-name">leverage</span>: points with extreme $x$ values have more power over the fit. (Formally, the leverage of point $i$ is the diagonal entry $P_{ii}$ of the hat matrix from Section 3.6.)
  
-**The fix: change the loss.** The **Huber loss**, introduced by Peter Huber in 1964, is quadratic for small residuals and linear for large ones:
+<span class="txt-special">The fix: change the loss.</span> The <span class="txt-name">Huber loss</span>, introduced by Peter Huber in 1964, is quadratic for small residuals and linear for large ones:
  
 $$\ell_\delta(r) = \begin{cases} \frac{1}{2}r^2 & \text{if } \lvert r \rvert \le \delta \\ \delta\lvert r \rvert - \frac{1}{2}\delta^2 & \text{otherwise} \end{cases}$$
  
@@ -331,16 +332,17 @@ Two details of scikit-learn's `HuberRegressor` that tripped me up:
  
 - The threshold `epsilon` (default 1.35) applies to the residual **divided by a scale $\sigma$** that the model estimates jointly with the weights, so it adapts to the units of $y$. I set `alpha=0.0` to switch off its default small L2 penalty and compare pure losses.
 - Its `outliers_` attribute flagged **four** points here: the corrupted one and also 153, 158 and 170 cm. That looks alarming but isn't: the estimated scale is tiny (the clean residuals are around half a kilogram), so any point beyond $1.35\sigma$ simply gets the linear branch of the loss. Points are down-weighted, never discarded.
+
 ```python
 from sklearn.linear_model import HuberRegressor
  
-huber = HuberRegressor(epsilon=1.35, alpha=0.0, max_iter=10_000).fit(H_out.reshape(-1, 1), W_out)
+huber = HuberRegressor(epsilon = 1.35, alpha = 0.0, max_iter = 10_000).fit(H_out.reshape(-1, 1), W_out)
 print(huber.coef_, huber.intercept_, huber.outliers_)
 ```
  
 ### 7.2 Extrapolation: a line has no idea where its data ended
  
-The fitted line hits zero weight at $33.735 / 0.5592 = 60.33$ cm. A newborn measuring 50 cm is predicted to weigh **−5.78 kg**.
+The fitted line hits zero weight at $33.735 / 0.5592 = 60.33$ cm. A newborn measuring 50 cm is predicted to weigh <span class="txt-highlight">−5.78 kg</span>.
 
 ![The fitted line extended from 40 to 260 cm, predicting negative weight below 60 cm](/assets/img/AI/ML/Supervised-Learning/2-linear-regression/lr-extrapolation.png)
 _Inside the shaded training range (147 to 183 cm) the line is excellent. Outside it, the model keeps its constant slope forever._
@@ -358,17 +360,17 @@ Section 3.5 had *perfectly* collinear features. The more common and sneakier cas
 ![Bar chart of OLS and ridge coefficients for the 10 diabetes features](/assets/img/AI/ML/Supervised-Learning/2-linear-regression/lr-diabetes-coefficients.png)
 _OLS assigns −918.5 to `s1` and +508.3 to `s2`. Ridge with α = 0.1 shrinks them to −118.1 and −80.9, and the test score slightly improves._
  
-When features are nearly collinear, many very different weight vectors fit the data almost equally well, so the specific values OLS picks are dominated by noise. The predictions can still be fine, but **reading the coefficients as "importance" becomes meaningless**. That is precisely the situation ridge regression was invented for.
+When features are nearly collinear, many very different weight vectors fit the data almost equally well, so the specific values OLS picks are dominated by noise. The predictions can still be fine, but <span class="txt-highlight">reading the coefficients as "importance" becomes meaningless<span>. That is precisely the situation ridge regression was invented for.
  
 ## 8. Solving It at Scale
  
 ### 8.1 Gradient descent and the shape of the bowl
  
-The closed form needs to build and solve a $(d+1) \times (d+1)$ system. The alternative is **gradient descent**: start somewhere, repeatedly step downhill,
+The closed form needs to build and solve a $(d+1) \times (d+1)$ system. The alternative is <span class="txt-highlight">gradient descent</span>: start somewhere, repeatedly step downhill,
  
 $$\mathbf{w} \leftarrow \mathbf{w} - \eta\,\nabla\mathcal{L}(\mathbf{w}) = \mathbf{w} - \frac{\eta}{N}\bar{X}^\top\left(\bar{X}\mathbf{w} - \mathbf{y}\right)$$
  
-which costs only $O(Nd)$ per step and never inverts anything. On a quadratic loss the convergence speed is governed by the eigenvalues $\mu_{\min} \le \dots \le \mu_{\max}$ of the Hessian $\frac{1}{N}\bar{X}^\top\bar{X}$. With the safe step $\eta = 1/\mu_{\max}$, the error along the slowest direction shrinks by a factor $(1 - \mu_{\min}/\mu_{\max})$ per step, so the number of steps scales with the **condition number** $\kappa = \mu_{\max}/\mu_{\min}$.
+which costs only $O(Nd)$ per step and never inverts anything. On a quadratic loss the convergence speed is governed by the eigenvalues $\mu_{\min} \le \dots \le \mu_{\max}$ of the Hessian $\frac{1}{N}\bar{X}^\top\bar{X}$. With the safe step $\eta = 1/\mu_{\max}$, the error along the slowest direction shrinks by a factor $(1 - \mu_{\min}/\mu_{\max})$ per step, so the number of steps scales with the <span class="txt-highlight">condition number</span> $\kappa = \mu_{\max}/\mu_{\min}$.
  
 And here is where the "simple" height data gave me the most surprising result of this post. Heights near 165 cm next to a column of ones make the two columns of $\bar{X}$ point in almost the same direction:
  
@@ -388,7 +390,7 @@ raw GD after    100,000 its: w1 = 0.360615  w0 =   -0.5427  loss - optimum = 2.4
 raw GD after 10,000,000 its: w1 = 0.519584  w0 =  -27.1131  loss - optimum = 9.9292e-02
 ```
  
-After **ten million** steps on a problem with 13 points and 2 parameters, gradient descent still has the intercept wrong by 6.6 kg. The theory predicts about $8.5 \times 10^7$ iterations just to shrink the slow error by a factor of a million. With **standardized** heights ($z = (x - \bar{x})/s$), the same algorithm converges in exactly **one** step:
+After <span class="txt-highlight">ten million</span> steps on a problem with 13 points and 2 parameters, gradient descent still has the intercept wrong by 6.6 kg. The theory predicts about $8.5 \times 10^7$ iterations just to shrink the slow error by a factor of a million. With **standardized** heights ($z = (x - \bar{x})/s$), the same algorithm converges in exactly <span class="txt-name">one</span> step:
  
 ![Left: elongated contour valley with the gradient descent path for raw heights. Right: circular contours and a single-step path for standardized heights](/assets/img/AI/ML/Supervised-Learning/2-linear-regression/lr-loss-surface-gd.png)
 _Left: in raw units the loss is a valley about a million times longer than it is wide. The first step finds the slope direction; then the iterates crawl along the valley floor. Right: after standardizing, the contours are circles._
@@ -410,7 +412,7 @@ On one CPU-only machine (absolute times will differ on yours, the trend will not
 | $N = 4{,}000$, $d = 1{,}000$  | 58 ms            | 464 ms        | 15 ms       |
 | $N = 12{,}000$, $d = 3{,}000$ | 1.21 s           | 7.97 s        | 0.099 s     |
  
-The normal equations cost $O(Nd^2 + d^3)$, SVD is more expensive but numerically the safest, and a gradient step is $O(Nd)$. When $N$ or $d$ reaches the millions, or data arrive as a stream, **stochastic gradient descent** on mini-batches is the only option, which is how linear models are trained at web scale (e.g. scikit-learn's `SGDRegressor`).
+The normal equations cost $O(Nd^2 + d^3)$, SVD is more expensive but numerically the safest, and a gradient step is $O(Nd)$. When $N$ or $d$ reaches the millions, or data arrive as a stream, <span class="txt-name">stochastic gradient descent</span> on mini-batches is the only option, which is how linear models are trained at web scale (e.g. scikit-learn's `SGDRegressor`).
  
 ```mermaid
 flowchart TD
@@ -434,7 +436,7 @@ Setting the gradient to zero gives:
  
 $$\left(\bar{X}^\top\bar{X} + \lambda I\right)\mathbf{w} = \bar{X}^\top\mathbf{y}$$
  
-The new matrix is always invertible, for a one-line reason: it is **positive definite**. For any $\mathbf{w} \ne \mathbf{0}$,
+The new matrix is always invertible, for a one-line reason: it is <span class="txt-name">positive definite</span>. For any $\mathbf{w} \ne \mathbf{0}$,
  
 $$\mathbf{w}^\top\left(\bar{X}^\top\bar{X} + \lambda I\right)\mathbf{w} = \lVert\bar{X}\mathbf{w}\rVert_2^2 + \lambda\lVert\mathbf{w}\rVert_2^2 > 0$$
  
@@ -453,7 +455,7 @@ Three things I verified in code:
 | Ridge, $\alpha = 0.1$                       | **0.4918** | —         |
 | Ridge, $\alpha = 1$                         | 0.4384     | —         |
  
-  Treat $\lambda$ as a hyperparameter and tune it on a log grid with cross-validation.
+Treat $\lambda$ as a hyperparameter and tune it on a log grid with cross-validation.
 - **Ridge stabilises coefficients more than it changes predictions.** The $R^2$ gain above is small, but the `s1`/`s2` weights went from −918/+508 to −118/−81 (Section 7.4).
 Ridge also has a Bayesian reading that completes Section 4: it is the **maximum a posteriori** estimate when the weights get a Gaussian prior $\mathbf{w} \sim \mathcal{N}(\mathbf{0}, \tau^2 I)$, with $\lambda = \sigma^2/\tau^2$. Replacing the squared norm with $\lVert\mathbf{w}\rVert_1$ gives LASSO, which sets some weights exactly to zero; I compared the two geometrically in the overfitting post.
  
@@ -470,6 +472,7 @@ Ridge also has a Bayesian reading that completes Section 4: it is the **maximum 
 | **A/B testing**              | variance-reduction techniques such as CUPED (Deng et al., 2013) regress the experiment metric on pre-experiment data to remove predictable variance         |
 | **Econometrics and science** | coefficients with confidence intervals quantify effects, as long as the assumptions of Section 4 are checked                                                |
  
-The common thread: linear regression survives not because it is the most accurate model, but because it is **fast, stable, and interpretable**, and because a linear model on top of good features (engineered by hand or learned by a network) is often all you need.
+The common thread: linear regression survives not because it is the most accurate model, but because it is <span class="txt-highlight">fast, stable, and interpretable</span>, and because a linear model on top of good features (engineered by hand or learned by a network) is often all you need.
  
 ![Pipeline](/assets/img/AI/ML/Supervised-Learning/2-linear-regression/lr-pipeline.png)
+_The whole workflow on one page. Step 3 shows two features with very different scales that both end up centered at 0 with unit spread, while the skewed one stays skewed. Step 6 marks the training range: predictions inside it are trustworthy, extrapolation is not._
